@@ -1,0 +1,17 @@
+{
+  "name": "daishmup-10-aqua",
+  "version": "0.0.1",
+  "description": "",
+  "main": "aqua.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "daishihmr <daishi.hmr@gmail.com> (http://github.dev7.jp/)",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  },
+  "dependencies": {
+    "socket.io": "^1.3.7"
+  }
+}
