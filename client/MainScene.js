@@ -62,14 +62,6 @@ phina.namespace(function() {
         }
       });
 
-      // var socket = io.connect(SERVER_URL);
-      // socket.on("connect", function() {
-      //   console.log("connect", this.id);
-      //   this.emit("join", {
-      //     id: this.id
-      //   });
-      // });
-
       var scene = this.threeLayer.scene;
       
       // 太陽
@@ -130,6 +122,12 @@ phina.namespace(function() {
           // _cannon2.rotation.y = (180 + Math.sin(e.app.ticker.frame * 0.01) * 90).toRadian();
 
           if (e.app.ticker.frame % 20 === 0) {
+            aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200))
+              .addTo(scene)
+              .addChildTo(self);
+            aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200))
+              .addTo(scene)
+              .addChildTo(self);
             aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200))
               .addTo(scene)
               .addChildTo(self);

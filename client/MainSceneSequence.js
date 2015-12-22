@@ -12,6 +12,9 @@ phina.define("aqua.client.MainSceneSequence", {
             width: 960,
             height: 640,
             assets: {
+              font: {
+                "main": "./assets/BreeSerif-Regular.ttf",
+              },
               image: {
                 "waternormals": "./assets/waternormals.jpg",
                 "skybox": "./assets/skyboxsun25degtest.png",
@@ -29,9 +32,14 @@ phina.define("aqua.client.MainSceneSequence", {
         },
       
         {
+          label: "lobby",
+          className: "aqua.client.LobbyScene"
+        },
+
+        {
           label: "main",
           className: "aqua.client.MainScene"
-        }
+        },
 
       ]
     });

@@ -1,3 +1,6 @@
+var config = require("./config.json");
 require("./server/Application");
 
-aqua.server.Application().run();
+var io = require("socket.io")(config.port);
+
+aqua.server.Application(io).run();

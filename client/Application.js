@@ -7,6 +7,9 @@ phina.define("aqua.client.Application", {
       height: 640,
     });
     // this.fps = 60;
+
+    this.socket = io.connect(SERVER_URL);
+
     this.replaceScene(aqua.client.MainSceneSequence());
     
     this.enableStats();

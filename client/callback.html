@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+
+<script src="./libs/phina.js"></script>
+<script>
+phina.main(function() {
+  
+  console.log(window.location.search);
+  var qs = window.location.search.split("?").join("").split("&");
+  var queries = qs
+    .map(function(q) {
+      var kv = q.split("=");
+      return {
+        key: kv[0],
+        value: kv[1]
+      }
+    })
+    .reduce(function(b, c) {
+      b[c.key] = c.value;
+      return b;
+    }, {});
+  console.log(queries);
+  console.log(queries["oauth_verifier"]);
+  console.log(queries["oauth_token"]);
+  
+  if (window.opener.$fire) {
+    window.opener.$fire("callback", {
+      oauthVerifier: queries["oauth_verifier"]
+    });
+  }
+  window.close();
+});
+</script>
+
+</body>
+</html>
