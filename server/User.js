@@ -10,6 +10,7 @@ phina.define("aqua.server.User", {
   name: null,
   twitterId: null,
   icon: null,
+
   auth: null,
 
   handler: null,
@@ -22,9 +23,14 @@ phina.define("aqua.server.User", {
     this.id = socket.id;
     this.socket = socket;
     this.name = name;
-
-    this.handle("startlogin");
-    this.handle("callback");
+  },
+  
+  setHandler: function(handler) {
+    if (this.handler == null && this.handler != handler) {
+      this._eventBuffer.clear();
+    }
+    this.handler = handler;
+    return this;
   },
 
   handle: function(eventType) {
@@ -34,6 +40,7 @@ phina.define("aqua.server.User", {
       params.user = self;
       self._eventBuffer.push([eventType, params]);
     });
+    return this;
   },
 
   update: function() {

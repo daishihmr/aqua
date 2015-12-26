@@ -1,9 +1,12 @@
 phina.define("aqua.client.LobbyScene", {
   superClass: "phina.display.CanvasScene",
-  
+
   _eventBuffer: null,
 
-  init: function() {
+  socket: null,
+
+  init: function(params) {
+    var self = this;
     this.superInit({
       backgroundColor: "black",
       width: 960,
@@ -11,52 +14,82 @@ phina.define("aqua.client.LobbyScene", {
     });
     this.fromJSON({
       _eventBuffer: [],
+      socket: params.socket,
       children: {
-        nameBox: {
-          className: "aqua.client.TextBox",
-          arguments: {
-            hint: "名前を入力してください"
+        layer0: {
+          className: "phina.display.CanvasElement",
+          children: {
+            bg0: {
+              className: "phina.display.Sprite",
+              arguments: ["lobbyBg", 960, 640],
+              originX: 0,
+              originY: 0,
+            },
+            bg1: {
+              className: "phina.display.RectangleShape",
+              arguments: {
+                width: 960,
+                height: 640,
+                fill: "hsla(240, 20%, 20%, 0.8)",
+                stroke: null,
+                padding: 0,
+              },
+              originX: 0,
+              originY: 0,
+            },
+            titleLabel: {
+              className: "phina.display.Label",
+              arguments: {
+                text: "lobby",
+                fill: "rgb(200, 200, 200)",
+                fontSize: 60,
+                fontFamily: "main",
+              },
+              x: this.gridX.span(8),
+              y: this.gridY.span(2),
+            },
+            sallyButton: {
+              className: "phina.ui.Button",
+              arguments: {
+                text: "sally",
+                width: 400,
+                fontFamily: "main",
+                fill: null,
+                stroke: "white",
+                strokeWidth: 1,
+              },
+              x: this.gridX.span(8),
+              y: this.gridY.span(8),
+              onadded: function() {
+                this.tweener
+                  .set({
+                    scaleX: 1.2,
+                    scaleY: 1.2,
+                  })
+                  .to({
+                    scaleX: 1.0,
+                    scaleY: 1.0,
+                  }, 500, "easeOutBounce");
+              },
+              onpointover: function() {
+                this.fill = "hsla(260, 20%, 60%, 0.8)";
+              },
+              onpointout: function() {
+                this.fill = null;
+              },
+              onpush: function() {
+                self.layer0.sallyButton.setInteractive(false);
+                self.sally();
+              }
+            },
           },
-          x: 480,
-          y: 40
-        }
+        },
       }
-    });
-    
-    var socket = io.connect(SERVER_URL);
-    socket.on("connect", function() {
-      console.log("connect", this.id);
-      this.emit("join", {
-        name: "ゲスト"
-      });
-    });
-    
-    socket.on("welcome", function(params) {
-      console.log(params);
-    });
-
-    this.tweener.wait(500).call(function() {
-      socket.emit("startlogin");
-    });
-
-    socket.on("outh", function(params) {
-      if (window.$on) {
-        window.$on("callback", function(params) {
-          socket.emit("callback", params);
-          window.$clear("callback");
-        });
-      }
-      window.open(params.url, "_blank", "width=800,height=600,menubar=no,location=yes,resizable=yes,scrollbars=yes,status=no");
-    });
-    
-    socket.on("loginsuccess", function(params) {
-      console.log(params.name);
-      console.log(params.icon);
     });
   },
   
-  onenter: function(ev) {
-    
+  sally: function() {
+    this.exit("battle");
   },
 
 });

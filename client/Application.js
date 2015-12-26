@@ -7,10 +7,15 @@ phina.define("aqua.client.Application", {
       height: 640,
     });
     // this.fps = 60;
+    this.backgroundColor = "black";
 
-    this.socket = io.connect(SERVER_URL);
+    var socket = io(SERVER_URL);
+    socket.on("connect", function() {
+      console.log("on connect", this.id);
+      this.emit("Join");
+    });
 
-    this.replaceScene(aqua.client.MainSceneSequence());
+    this.replaceScene(aqua.client.MainSceneSequence(socket));
     
     this.enableStats();
   }

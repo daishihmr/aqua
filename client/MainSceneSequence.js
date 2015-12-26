@@ -1,7 +1,7 @@
 phina.define("aqua.client.MainSceneSequence", {
   superClass: "phina.game.ManagerScene",
   
-  init: function() {
+  init: function(socket) {
     this.superInit({
       scenes: [
       
@@ -21,6 +21,7 @@ phina.define("aqua.client.MainSceneSequence", {
                 "ship": "./assets/ship0.png",
                 "cannon": "./assets/ship1.png",
                 "cannonRed": "./assets/ship1red.png",
+                "lobbyBg": "./assets/lobby_bg.png",
               },
               vox: {
                 "test": "./assets/chr_fox.vox",
@@ -32,12 +33,24 @@ phina.define("aqua.client.MainSceneSequence", {
         },
       
         {
-          label: "lobby",
-          className: "aqua.client.LobbyScene"
+          label: "login",
+          className: "aqua.client.LoginScene",
+          arguments: {
+            socket: socket
+          },
+          nextLabel: "lobby",
         },
 
         {
-          label: "main",
+          label: "lobby",
+          className: "aqua.client.LobbyScene",
+          arguments: {
+            socket: socket
+          }
+        },
+
+        {
+          label: "battle",
           className: "aqua.client.MainScene"
         },
 

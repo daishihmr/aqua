@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
 <script src="./libs/three.js"></script>
 <script src="./libs/vox.js"></script>
 <script src="./libs/Mirror.js"></script>
@@ -16,6 +16,7 @@
 <script src="./VoxAsset.js"></script>
 <script src="./Application.js"></script>
 <script src="./MainSceneSequence.js"></script>
+<script src="./LoginScene.js"></script>
 <script src="./LobbyScene.js"></script>
 <script src="./MainScene.js"></script>
 <script src="./TextBox.js"></script>
@@ -24,26 +25,6 @@
 <script src="./MyShip.js"></script>
 <script src="./Explosion.js"></script>
 <script src="./client.js"></script>
-
-<script>
-var $evnetListeners = {};
-var $on = function(eventType, listsner) {
-  if (!$evnetListeners[eventType]) {
-    $evnetListeners[eventType] = [];
-  }
-  $evnetListeners[eventType].push(listsner);
-};
-var $clear = function(eventType, listsner) {
-  $evnetListeners[eventType] = [];
-};
-var $fire = function(eventType, params) {
-  if ($evnetListeners[eventType]) {
-    $evnetListeners[eventType].forEach(function(listener) {
-      listener.call(window, params);
-    });
-  }
-};
-</script>
 
 </body>
 </html>

@@ -10,7 +10,7 @@
 <script>
 phina.main(function() {
   
-  console.log(window.location.search);
+  // console.log(window.location.search);
   var qs = window.location.search.split("?").join("").split("&");
   var queries = qs
     .map(function(q) {
@@ -24,12 +24,12 @@ phina.main(function() {
       b[c.key] = c.value;
       return b;
     }, {});
-  console.log(queries);
-  console.log(queries["oauth_verifier"]);
-  console.log(queries["oauth_token"]);
+  // console.log(queries);
+  // console.log(queries["oauth_verifier"]);
+  // console.log(queries["oauth_token"]);
   
-  if (window.opener.$fire) {
-    window.opener.$fire("callback", {
+  if (window.opener.$oncallback) {
+    window.opener.$oncallback({
       oauthVerifier: queries["oauth_verifier"]
     });
   }

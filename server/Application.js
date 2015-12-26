@@ -20,16 +20,17 @@ phina.define("aqua.server.Application", {
     io.on("connection", function(socket) {
       log("on connect", socket.id);
 
-      socket.on("join", function(params) {
-        self._eventBuffer.push(["join", {
+      socket.on("Join", function(params) {
+        log("on Join", socket.id);
+        self._eventBuffer.push(["Join", {
           socket: this,
-          name: params.name,
+          name: "unknown-" + Date.now(),
         }]);
       });
 
       socket.on("disconnect", function() {
-        log("on disconnect", this.id);
-        self._eventBuffer.push(["disconnect", {
+        log("on Disconnect", this.id);
+        self._eventBuffer.push(["Disconnect", {
           id: this.id
         }]);
       });
@@ -46,7 +47,7 @@ phina.define("aqua.server.Application", {
     this._eventBuffer.clear();
   },
 
-  onjoin: function(params) {
+  onJoin: function(params) {
     var self = this;
     var user = this.users.find(function(_) {
       return _.id == params.id
@@ -66,7 +67,7 @@ phina.define("aqua.server.Application", {
     }
   },
 
-  ondisconnect: function(params) {
+  onDisconnect: function(params) {
     var self = this;
     var user = this.users.find(function(_) {
       return _.id == params.id

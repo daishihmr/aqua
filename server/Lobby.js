@@ -1,8 +1,8 @@
 var config = require("../config.json");
 var phina = require("./libs/phina");
 var log = require("./Log")("Lobby");
-var twitterAPI = require('node-twitter-api');
-var twitter = new twitterAPI({
+var TwitterAPI = require("node-twitter-api");
+var twitter = new TwitterAPI({
   consumerKey: config.consumerKey,
   consumerSecret: config.consumerSecret,
   // callback: "http://" + config.domain + ":" + config.port + "/callback"
@@ -14,25 +14,40 @@ require("./User");
 phina.define("aqua.server.Lobby", {
   superClass: "phina.app.Scene",
 
+  _eventBuffer: null,
+
   init: function() {
     this.superInit();
     this.fromJSON({
+      _eventBuffer: [],
       children: {
         users: {
           className: "phina.app.Element"
         }
       }
-    })
+    });
+  },
+
+  update: function() {
+    var self = this;
+    this._eventBuffer.forEach(function(ev) {
+      self.flare(ev[0], ev[1]);
+    });
+    this._eventBuffer.clear();
   },
 
   addUser: function(user) {
-    user.handler = this;
+    user.handle("StartLogin");
+    user.handle("CalledBack");
+    user.handle("LoginWithGuest");
+    user.handle("MatchingStart");
+    user.setHandler(this);
     user.addChildTo(this.users);
-    log("ok")
+    log(user.name + " enter Lobby");
   },
 
-  onstartlogin: function(ev) {
-    log("onstartlogin");
+  onStartLogin: function(ev) {
+    log("onStartLogin");
     var user = ev.user;
 
     twitter.getRequestToken(function(error, requestToken, requestTokenSecret, results) {
@@ -42,72 +57,90 @@ phina.define("aqua.server.Lobby", {
         return;
       }
 
-      user.auth = {};
-      user.auth.requestToken = requestToken;
-      user.auth.requestTokenSecret = requestTokenSecret;
-      var url = 'https://twitter.com/oauth/authenticate?oauth_token=' + user.auth.requestToken;
-      user.socket.emit("outh", {
+      user._auth = {};
+      user._auth.requestToken = requestToken;
+      user._auth.requestTokenSecret = requestTokenSecret;
+      var url = "https://twitter.com/oauth/authenticate?oauth_token=" + user._auth.requestToken;
+      user.socket.emit("Outh", {
         url: url
       });
     });
   },
 
-  oncallback: function(ev) {
-    log("callback");
+  onCalledBack: function(ev) {
+    log("CalledBack");
     log(ev.oauthVerifier);
 
     var self = this;
     var user = ev.user;
     var oauthVerifier = ev.oauthVerifier;
-    var auth = user.auth;
+    var _auth = user._auth;
 
-    twitter.getAccessToken(auth.requestToken, auth.requestTokenSecret, oauthVerifier,
+    twitter.getAccessToken(_auth.requestToken, _auth.requestTokenSecret, oauthVerifier,
       function(error, accessToken, accessTokenSecret, results) {
         if (error) {
           // TODO エラー
           return;
         }
 
-        auth.accessToken = accessToken;
-        auth.accessTokenSecret = accessTokenSecret;
+        _auth.accessToken = accessToken;
+        _auth.accessTokenSecret = accessTokenSecret;
 
-        self.getUserInfo(user);
+        self.onGotAccessToken(user);
       }
     );
   },
 
-  getUserInfo: function(user) {
+  onGotAccessToken: function(user) {
+    log("onGotAccessToken");
+
     var self = this;
 
     twitter.account(
-      'verify_credentials', {},
-      user.auth.accessToken,
-      user.auth.accessTokenSecret,
+      "verify_credentials", {},
+      user._auth.accessToken,
+      user._auth.accessTokenSecret,
       function(error, account) {
         if (error) {
           // TODO エラー
           return;
         } else {
-          self.onGetUserInfo(user, account);
+          self.onGotUserInfo(user, account);
         }
       }
     );
   },
 
-  onGetUserInfo: function(user, account) {
+  onGotUserInfo: function(user, account) {
+    log("onGotUserInfo");
+
     user.name = account.screen_name;
     user.icon = account.profile_image_url;
     user.twitterId = account.id;
-    user.auth = null;
-    
+    user._auth = null;
+
     console.log(user.name);
     console.log(user.twitterId);
     console.log(user.icon);
-    
-    user.socket.emit("loginsuccess", {
+
+    user.socket.emit("LoginSuccess", {
       name: user.name,
       icon: user.icon
     });
   },
+  
+  onLoginWithGuest: function(ev) {
+    log("onLoginWithGuest");
+    
+    var user = ev.user;
+    
+    user.name = "guest-" + Date.now();
+    user.icon = "./assets/guest.png";
+
+    user.socket.emit("LoginSuccess", {
+      name: user.name,
+      icon: user.icon
+    });
+  }
 
 });
