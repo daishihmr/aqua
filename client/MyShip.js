@@ -9,6 +9,8 @@ phina.define("aqua.client.MyShip", {
     this.superUpdate = aqua.client.Ship.prototype.update;
     
     this.cannonSprites = [];
+    
+    this.speed = 5;
   },
   
   update: function(app) {

@@ -14,7 +14,7 @@ phina.define("aqua.client.Application", {
       console.log("on connect", this.id);
       this.emit("Join");
     });
-
+    
     this.replaceScene(aqua.client.MainSceneSequence(socket));
     
     this.enableStats();

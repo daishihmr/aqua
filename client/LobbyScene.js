@@ -49,35 +49,13 @@ phina.define("aqua.client.LobbyScene", {
               y: this.gridY.span(2),
             },
             sallyButton: {
-              className: "phina.ui.Button",
+              className: "aqua.client.Button",
               arguments: {
                 text: "sally",
-                width: 400,
-                fontFamily: "main",
-                fill: null,
-                stroke: "white",
-                strokeWidth: 1,
               },
               x: this.gridX.span(8),
               y: this.gridY.span(8),
-              onadded: function() {
-                this.tweener
-                  .set({
-                    scaleX: 1.2,
-                    scaleY: 1.2,
-                  })
-                  .to({
-                    scaleX: 1.0,
-                    scaleY: 1.0,
-                  }, 500, "easeOutBounce");
-              },
-              onpointover: function() {
-                this.fill = "hsla(260, 20%, 60%, 0.8)";
-              },
-              onpointout: function() {
-                this.fill = null;
-              },
-              onpush: function() {
+              onclick: function() {
                 self.layer0.sallyButton.setInteractive(false);
                 self.sally();
               }

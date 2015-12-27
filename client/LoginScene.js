@@ -49,36 +49,13 @@ phina.define("aqua.client.LoginScene", {
               y: this.gridY.span(2),
             },
             loginWithTwitterButton: {
-              className: "phina.ui.Button",
+              className: "aqua.client.Button",
               arguments: {
                 text: "login with Twitter",
-                width: 400,
-                fontFamily: "main",
-                // fill: "hsla(260, 20%, 60%, 0.8)"
-                fill: null,
-                stroke: "white",
-                strokeWidth: 1,
               },
               x: this.gridX.span(4),
               y: this.gridY.span(8),
-              onadded: function() {
-                this.tweener
-                  .set({
-                    scaleX: 1.2,
-                    scaleY: 1.2,
-                  })
-                  .to({
-                    scaleX: 1.0,
-                    scaleY: 1.0,
-                  }, 500, "easeOutBounce");
-              },
-              onpointover: function() {
-                this.fill = "hsla(260, 20%, 60%, 0.8)";
-              },
-              onpointout: function() {
-                this.fill = null;
-              },
-              onpush: function() {
+              onclick: function() {
                 self.layer0.loginWithTwitterButton.setInteractive(false);
                 self.layer0.loginAsGuestButton.setInteractive(false);
                 self.loginWithTwitter();
@@ -95,36 +72,13 @@ phina.define("aqua.client.LoginScene", {
               y: this.gridY.span(8),
             },
             loginAsGuestButton: {
-              className: "phina.ui.Button",
+              className: "aqua.client.Button",
               arguments: {
                 text: "login as Guest",
-                width: 400,
-                fontFamily: "main",
-                // fill: "hsla(260, 20%, 60%, 0.8)"
-                fill: null,
-                stroke: "white",
-                strokeWidth: 1,
               },
               x: this.gridX.span(12),
               y: this.gridY.span(8),
-              onadded: function() {
-                this.tweener
-                  .set({
-                    scaleX: 1.2,
-                    scaleY: 1.2,
-                  })
-                  .to({
-                    scaleX: 1.0,
-                    scaleY: 1.0,
-                  }, 500, "easeOutBounce");
-              },
-              onpointover: function() {
-                this.fill = "hsla(260, 20%, 60%, 0.8)";
-              },
-              onpointout: function() {
-                this.fill = null;
-              },
-              onpush: function() {
+              onclick: function() {
                 self.layer0.loginWithTwitterButton.setInteractive(false);
                 self.layer0.loginAsGuestButton.setInteractive(false);
                 self.loginAsGuest();
@@ -135,19 +89,7 @@ phina.define("aqua.client.LoginScene", {
       }
     });
 
-    this.socket.on("Outh", function(params) {
-      if (!window.$oncallback) {
-        window.$oncallback = function(params) {
-          self.socket.emit("CalledBack", params);
-          delete window.$oncallback;
-        };
-      }
-      window.open(params.url, "_blank", "width=800,height=600,menubar=no,location=yes,resizable=yes,scrollbars=yes,status=no");
-    });
-
-    this.socket.on("LoginSuccess", function(params) {
-      // console.log(params.name);
-      // console.log(params.icon);
+    this.socket.on("LoginSucceeded", function(params) {
       self.layer0.tweener
       .fadeOut(500)
         .call(function() {
@@ -161,6 +103,16 @@ phina.define("aqua.client.LoginScene", {
   },
 
   loginAsGuest: function() {
+    this.socket.on("Outh", function(params) {
+      if (!window.$oncallback) {
+        window.$oncallback = function(params) {
+          self.socket.emit("CalledBack", params);
+          delete window.$oncallback;
+        };
+      }
+      window.open(params.url, "_blank", "width=800,height=600,menubar=no,location=yes,resizable=yes,scrollbars=yes,status=no");
+    });
+
     this.socket.emit("LoginWithGuest");
   }
 

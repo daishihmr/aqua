@@ -123,7 +123,7 @@ phina.define("aqua.server.Lobby", {
     console.log(user.twitterId);
     console.log(user.icon);
 
-    user.socket.emit("LoginSuccess", {
+    user.socket.emit("LoginSucceeded", {
       name: user.name,
       icon: user.icon
     });
@@ -137,7 +137,7 @@ phina.define("aqua.server.Lobby", {
     user.name = "guest-" + Date.now();
     user.icon = "./assets/guest.png";
 
-    user.socket.emit("LoginSuccess", {
+    user.socket.emit("LoginSucceeded", {
       name: user.name,
       icon: user.icon
     });
