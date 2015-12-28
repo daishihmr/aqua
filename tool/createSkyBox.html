@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+
+<script src="../client/libs/phina.js"></script>
+<script>
+var SIZE = 1024;
+var FILE_NAME = "../client/assets/skybox{0}.png";
+
+phina.globalize();
+phina.main(function() {
+  var app = BaseApp();
+  app.replaceScene(ManagerScene({
+    scenes: [
+
+      {
+        className: "LoadingScene",
+        arguments: {
+          assets: {
+            image: {
+              "img0": FILE_NAME.format("0"),
+              "img1": FILE_NAME.format("1"),
+              "img2": FILE_NAME.format("2"),
+              "img3": FILE_NAME.format("3"),
+              "img4": FILE_NAME.format("4"),
+              "img5": FILE_NAME.format("5"),
+            }
+          }
+        }
+      },
+      
+      {
+        className: "Show"
+      },
+
+    ]
+  }));
+  
+  app.run();
+});
+
+phina.define("Show", {
+  superClass: "Scene",
+  init: function() {
+    this.superInit();
+
+    var canvas = Canvas();
+    canvas.setSize(1024 * 4, 1024 * 3);
+    canvas.context.drawImage(AssetManager.get("image", "img0").domElement, 1024 * 0, 1024 * 1);
+    canvas.context.drawImage(AssetManager.get("image", "img1").domElement, 1024 * 1, 1024 * 1);
+    canvas.context.drawImage(AssetManager.get("image", "img2").domElement, 1024 * 2, 1024 * 1);
+    canvas.context.drawImage(AssetManager.get("image", "img3").domElement, 1024 * 3, 1024 * 1);
+    canvas.context.drawImage(AssetManager.get("image", "img4").domElement, 1024 * 1, 1024 * 0);
+    canvas.context.drawImage(AssetManager.get("image", "img5").domElement, 1024 * 1, 1024 * 2);
+    
+    canvas.saveAsImage();
+  }
+});
+</script>
+
+</body>
+</html>
