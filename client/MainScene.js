@@ -63,10 +63,11 @@ phina.define("aqua.client.MainScene", {
     var scene = this.threeLayer.scene;
 
     // 太陽
+    this.threeLayer.light.intensity = 0.2;
     this.threeLayer.light.position.x = -1;
 
     // 環境光
-    scene.add(new THREE.AmbientLight(0x606060));
+    scene.add(new THREE.AmbientLight(0x909090));
 
     // カメラ
     var camera = this.threeLayer.camera;
@@ -120,13 +121,10 @@ phina.define("aqua.client.MainScene", {
         // _cannon2.rotation.y = (180 + Math.sin(e.app.ticker.frame * 0.01) * 90).toRadian();
 
         if (e.app.ticker.frame % 20 === 0) {
-          aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200))
+          aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200), 0.8)
             .addTo(scene)
             .addChildTo(self);
-          aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200))
-            .addTo(scene)
-            .addChildTo(self);
-          aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200))
+          aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200), 1.0)
             .addTo(scene)
             .addChildTo(self);
         }

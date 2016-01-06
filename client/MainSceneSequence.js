@@ -27,6 +27,7 @@ phina.define("aqua.client.MainSceneSequence", {
                 "test": "./assets/chr_fox.vox",
                 "ship": "./assets/ship.vox",
                 "cannon": "./assets/ship_cannon.vox",
+                "bullet": "./assets/bullet.vox",
               }
             }
           }

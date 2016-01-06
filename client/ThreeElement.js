@@ -87,6 +87,31 @@ phina.define("aqua.client.ThreeElement", {
       set: function(v) {
         this.$t.rotation.z = v;
       }
-    }
+    },
+    matrix: {
+      get: function() {
+        return this.$t.matrix;
+      }
+    },
+    position: {
+      get: function() {
+        return this.$t.position;
+      }
+    },
+    scale: {
+      get: function() {
+        return this.$t.scale;
+      }
+    },
+    rotation: {
+      get: function() {
+        return this.$t.rotation;
+      }
+    },
+    quaternion: {
+      get: function() {
+        return this.$t.quaternion;
+      }
+    },
   }
 });

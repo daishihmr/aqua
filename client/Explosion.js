@@ -3,8 +3,10 @@ phina.namespace(function() {
   phina.define("aqua.client.Explosion", {
     superClass: "aqua.client.ThreeElement",
 
-    init: function(x, y, z) {
+    init: function(x, y, z, scale) {
       this.superInit(new THREE.Object3D());
+      
+      scale = scale || 1.0;
 
       this.x = x;
       this.y = y;
@@ -23,23 +25,20 @@ phina.namespace(function() {
 
       var $t = this.$t;
 
-      var array = Array.range(0, 20).map(function() {
+      var array = Array.range(0, 20 * scale).map(function() {
         var p = new THREE.Mesh(geo, mat);
-        var axis = new THREE.Vector3(Math.randfloat(-1, 1), Math.randfloat(-1, 1), Math.randfloat(-1, 1));
-        axis.normalize();
-        angle = Math.randfloat(0, Math.PI * 2);
-        p.quaternion.setFromAxisAngle(axis, angle)
         $t.add(p);
 
         var q = new THREE.Quaternion();
         q.setFromEuler(new THREE.Euler(Math.randfloat(0, Math.PI * 2), Math.randfloat(0, Math.PI * 2), Math.randfloat(0, Math.PI * 2)));
-        var v = new THREE.Vector3(1, 0, 0).multiplyScalar(Math.randfloat(5, 20)).applyQuaternion(q);
+        var v = new THREE.Vector3(1, 0, 0).multiplyScalar(Math.randfloat(5, 25)).applyQuaternion(q);
+        v.multiplyScalar(scale);
 
         return [p, v]
       });
 
       var age = 0;
-      var s = 1.04;
+      var s = 1.04 * scale;
       this.on("enterframe", function() {
         array.forEach(function(ps) {
           ps[0].position.add(ps[1]);
@@ -54,14 +53,12 @@ phina.namespace(function() {
         s -= 0.004;
         color0.lerp(color1, 0.1);
         mat.color = color0;
-        if (age > 40) {
+        if (s <= 0.004 || age > 50) {
           this.remove();
         }
       });
     }
 
   });
-
-  var texture = null;
 
 });

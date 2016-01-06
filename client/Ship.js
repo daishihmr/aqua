@@ -91,6 +91,21 @@ phina.define("aqua.client.Ship", {
     this.velocity.set(0, 0, -this.speed);
     this.velocity.applyQuaternion(this.$t.quaternion);
     this.$t.position.add(this.velocity);
+    
+    if (this.input["space"]) {
+      var cannon = this.cannons[this.selectedCannon];
+
+      var p = new THREE.Vector3(0, 0, 0);
+      p.applyMatrix4(cannon.matrixWorld);
+
+      var d = new THREE.Euler(0, 0, 0, "YXZ");
+      d.x = (10).toRadian();
+      d.y = cannon.rotation.y + this.rotation.y;
+
+      aqua.client.Bullet(p, d, this.velocity.clone())
+        .addTo(this.$t.parent)
+        .addChildTo(this.parent);
+    }
 
     if (this.camera) {
       var cannon = this.cannons[this.selectedCannon];

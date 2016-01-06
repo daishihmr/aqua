@@ -27,6 +27,8 @@ phina.define("aqua.client.StantAloneSequence", {
                 "test": "./assets/chr_fox.vox",
                 "ship": "./assets/ship.vox",
                 "cannon": "./assets/ship_cannon.vox",
+                "bullet": "./assets/bullet.vox",
+                "splash": "./assets/splash.vox",
               }
             }
           }
