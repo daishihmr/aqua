@@ -5,7 +5,11 @@ phina.define("aqua.client.Bullet", {
     this.superInit(new THREE.Object3D());
 
     var body = phina.asset.AssetManager.get("vox", "bullet").get();
-    body.scale.set(0.15, 0.15, 0.15);
+    var tex = body.material.map;
+    body.material = new THREE.MeshBasicMaterial({
+      map: tex,
+    });
+    body.scale.set(0.10, 0.10, 0.10);
     this.$t.add(body);
     
     this.velocity = new THREE.Vector3(0, 0, -20);
@@ -15,6 +19,8 @@ phina.define("aqua.client.Bullet", {
     this.z = position.z;
     this.rotation.copy(rotation);
     this.shipVelocity = shipVelocity;
+    
+    this.update();
   },
   
   update: function() {

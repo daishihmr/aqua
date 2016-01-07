@@ -51,7 +51,7 @@ phina.define("aqua.client.Ship", {
     this.velocity = new THREE.Vector3(0, 0, 0);
     this.cameraPosition = new THREE.Vector3(0, 0, 0);
     this.cameraTarget = new THREE.Vector3(0, 0, 0);
-    
+
     this._tempVector = new THREE.Vector3(0, 0, 0);
   },
 
@@ -77,7 +77,10 @@ phina.define("aqua.client.Ship", {
     } else if (this.input["left"]) {
       this.$t.rotation.y += (+0.1 * this.speed).toRadian();
     }
-
+    
+    if (this.selectedCannon == 2) {
+      this.input["cannonRotation"] *= -1;
+    }
     this.cannon0.rotation.y = Math.clamp(this.cannon0.rotation.y + this.input["cannonRotation"], (-110).toRadian(), (110).toRadian());
     this.cannon1.rotation.y = Math.clamp(this.cannon1.rotation.y + this.input["cannonRotation"], (-110).toRadian(), (110).toRadian());
     this.cannon2.rotation.y = Math.clamp(this.cannon2.rotation.y - this.input["cannonRotation"], (180 + -110).toRadian(), (180 + 110).toRadian());
@@ -87,48 +90,62 @@ phina.define("aqua.client.Ship", {
     } else if (this.input["cannonSelectDown"]) {
       this.selectedCannon = (this.selectedCannon + 3 + 1) % 3;
     }
-
+    
     this.velocity.set(0, 0, -this.speed);
     this.velocity.applyQuaternion(this.$t.quaternion);
     this.$t.position.add(this.velocity);
-    
+
     if (this.input["space"]) {
       var cannon = this.cannons[this.selectedCannon];
 
-      var p = new THREE.Vector3(0, 0, 0);
+      (3).times(function(i) {
+
+        var p = new THREE.Vector3((-1 + i) * 150, 0, 0);
+        p.applyMatrix4(cannon.matrixWorld);
+
+        var d = new THREE.Euler(0, 0, 0, "YXZ");
+        d.x = Math.randfloat(5, 10).toRadian();
+        d.y = cannon.rotation.y + this.rotation.y;
+
+        aqua.client.Bullet(p, d, this.velocity.clone())
+          .addTo(this.$t.parent)
+          .addChildTo(this.parent);
+
+      }.bind(this));
+
+      var p = new THREE.Vector3(0, 0, -300);
       p.applyMatrix4(cannon.matrixWorld);
-
-      var d = new THREE.Euler(0, 0, 0, "YXZ");
-      d.x = (10).toRadian();
-      d.y = cannon.rotation.y + this.rotation.y;
-
-      aqua.client.Bullet(p, d, this.velocity.clone())
+      aqua.client.Explosion(p.x, p.y, p.z, 0.8)
         .addTo(this.$t.parent)
         .addChildTo(this.parent);
     }
 
     if (this.camera) {
       var cannon = this.cannons[this.selectedCannon];
-      
+
       var temp = new THREE.Vector3();
 
-      temp.set(0, 120, 350);
+      temp.set(0, 1000, 3200);
       if (cannon) {
-        temp.applyQuaternion(cannon.quaternion);
-        temp.add(cannon.position.clone().multiplyScalar(0.25 * 0.5));
+        // temp.applyQuaternion(cannon.quaternion);
+        // temp.add(cannon.position.clone().multiplyScalar(0.25 * 0.5));
+        temp.applyMatrix4(cannon.matrixWorld);
       }
-      temp.applyQuaternion(this.$t.quaternion);
-      temp.add(this.$t.position);
-      this.camera.position.lerp(temp, 0.1);
+      // temp.applyQuaternion(this.$t.quaternion);
+      // temp.add(this.$t.position);
+      this.camera.position.lerp(temp, 0.2);
+      // this.camera.position.copy(temp);
 
-      temp.set(0, 20, -400);
+      temp.set(0, 200, -4000);
       if (cannon) {
-        temp.applyQuaternion(cannon.quaternion);
-        temp.add(cannon.position.clone().multiplyScalar(0.25 * 0.5));
+        // temp.applyQuaternion(cannon.quaternion);
+        // temp.add(cannon.position.clone().multiplyScalar(0.25 * 0.5));
+        temp.applyMatrix4(cannon.matrixWorld);
       }
-      temp.applyQuaternion(this.$t.quaternion);
-      temp.add(this.$t.position);
-      this.cameraTarget.lerp(temp, 0.1);
+      // temp.applyQuaternion(this.$t.quaternion);
+      // temp.add(this.$t.position);
+      this.cameraTarget.lerp(temp, 0.2);
+      // this.cameraTarget.copy(temp);
       this.camera.lookAt(this.cameraTarget);
     }
   }

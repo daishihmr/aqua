@@ -13,8 +13,10 @@ phina.define("aqua.client.Splash", {
     body.material = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       map: tex,
+      transparent: true,
+      opacity: 0.5,
     });
-    body.scale.set(scale * 0.5, scale * 0.5, scale * 0.5);
+    body.scale.set(scale * 0.25, scale * 0.25, scale * 0.25);
     this.$t.add(body);
 
     this.scaleY = 0.001;
