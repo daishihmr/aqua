@@ -14,7 +14,7 @@ phina.define("aqua.client.VoxAsset", {
       var builder = new vox.MeshBuilder(voxelData, {
         voxelSize: 20,
         vertexColor: false,
-        optimizeFaces: false,
+        optimizeFaces: true,
       });
       self._asset = builder.createMesh();
       resolve(self);
