@@ -214,7 +214,7 @@
     return temp;
   });
 
-  Object.prototype.method('$watch', function(key, callback) {
+  Object.prototype.$method('$watch', function(key, callback) {
     var target = this;
     var descriptor = null;
 
