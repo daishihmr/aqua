@@ -1,7 +1,7 @@
 phina.define("aqua.client.Bullet", {
   superClass: "aqua.client.ThreeElement",
   
-  init: function(position, rotation, shipVelocity) {
+  init: function(x, y, z) {
     this.superInit(new THREE.Object3D());
 
     var body = phina.asset.AssetManager.get("vox", "bullet").get();
@@ -14,11 +14,9 @@ phina.define("aqua.client.Bullet", {
     
     this.velocity = new THREE.Vector3(0, 0, -20);
     
-    this.x = position.x;
-    this.y = position.y;
-    this.z = position.z;
-    this.rotation.copy(rotation);
-    this.shipVelocity = shipVelocity;
+    this.x = x;
+    this.y = y;
+    this.z = z;
     
     this.update();
   },
@@ -29,11 +27,11 @@ phina.define("aqua.client.Bullet", {
     this.velocity.applyQuaternion(this.quaternion);
     this.position.add(this.velocity);
     
-    this.shipVelocity.multiplyScalar(0.99);
-    this.position.add(this.shipVelocity);
-    
     if (this.position.y < 0) {
       aqua.client.Splash(this.position)
+        .addTo(this.$t.parent)
+        .addChildTo(this.parent);
+      aqua.client.Explosion(this.position.x, this.position.y, this.position.z)
         .addTo(this.$t.parent)
         .addChildTo(this.parent);
       this.remove();

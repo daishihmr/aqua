@@ -98,42 +98,16 @@ phina.define("aqua.client.MainScene", {
       ship.rotY = Math.randfloat(0, 360).toRadian();
     }.bind(this));
 
-    this.camera.tweener
-      .set({
-        x: 0,
-        y: 300,
-        z: 400
-      });
-    this.camera.target.tweener
-      .set({
-        x: 0,
-        y: 0,
-        z: -500
-      });
-
-    var last = phina.app.Element()
-      .addChildTo(this)
-      .on("enterframe", function(e) {
-        // test.rotY += (0.25).toRadian();
-
-        // _cannon0.rotation.y = (Math.sin(e.app.ticker.frame * 0.01) * 90).toRadian();
-        // _cannon1.rotation.y = (Math.sin(e.app.ticker.frame * 0.01) * 90).toRadian();
-        // _cannon2.rotation.y = (180 + Math.sin(e.app.ticker.frame * 0.01) * 90).toRadian();
-
-        if (e.app.ticker.frame % 20 === 0) {
-          aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200), 0.8)
-            .addTo(scene)
-            .addChildTo(self);
-          aqua.client.Explosion(Math.randint(-1200, 1200), 50, Math.randint(-1200, 1200), 1.0)
-            .addTo(scene)
-            .addChildTo(self);
-        }
-      })
-      .tweener
+    // timer
+    phina.app.Element().addChildTo(this).tweener
       .wait(100)
       .call(function() {
         self.threeLayer.visible = true;
       });
+  },
+
+  update: function() {
+    
   },
 
   _setupWater: function(scene, camera) {
@@ -143,8 +117,8 @@ phina.define("aqua.client.MainScene", {
     waterNormals.wrapT = THREE.RepeatWrapping;
 
     var water = new THREE.Water(this.threeLayer.renderer, camera, scene, {
-      textureWidth: 512,
-      textureHeight: 512,
+      textureWidth: 128,
+      textureHeight: 128,
       waterNormals: waterNormals,
       alpha: 1.0,
       sunDirection: this.threeLayer.light.position.clone().normalize(),
@@ -216,9 +190,5 @@ phina.define("aqua.client.MainScene", {
         skyBox.position.copy(camera.position);
       });
   },
-  
-  update: function() {
-    
-  }
 
 });

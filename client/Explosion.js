@@ -25,13 +25,13 @@ phina.namespace(function() {
 
       var $t = this.$t;
 
-      var array = Array.range(0, 20 * scale).map(function() {
+      var array = Array.range(0, 30 * scale).map(function() {
         var p = new THREE.Mesh(geo, mat);
         $t.add(p);
 
         var q = new THREE.Quaternion();
         q.setFromEuler(new THREE.Euler(Math.randfloat(0, Math.PI * 2), Math.randfloat(0, Math.PI * 2), Math.randfloat(0, Math.PI * 2)));
-        var v = new THREE.Vector3(1, 0, 0).multiplyScalar(Math.randfloat(5, 25)).applyQuaternion(q);
+        var v = new THREE.Vector3(1, 0, 0).multiplyScalar(Math.randfloat(10, 35)).applyQuaternion(q);
         v.multiplyScalar(scale);
 
         return [p, v]
