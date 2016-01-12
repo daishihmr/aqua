@@ -5,10 +5,10 @@ phina.define("aqua.client.ThreeElement", {
     this.superInit();
     this.$t = threeObject;
   },
-
-  addTo: function(threeObject) {
-    threeObject.add(this.$t);
-    return this;
+  
+  addChild: function(child) {
+    phina.app.Element.prototype.addChild.call(this, child);
+    if (child.$t) this.$t.add(child.$t);
   },
 
   onremoved: function() {

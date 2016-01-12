@@ -1,6 +1,9 @@
 phina.define("aqua.client.MainScene", {
   superClass: "phina.display.CanvasScene",
 
+  ships: null,
+  bullets: null,
+
   init: function() {
     var self = this;
 
@@ -9,6 +12,8 @@ phina.define("aqua.client.MainScene", {
       height: 640
     });
     this.fromJSON({
+      ships: [],
+      bullets: [],
       children: {
         threeLayer: {
           className: "phina.display.ThreeLayer",
@@ -24,9 +29,9 @@ phina.define("aqua.client.MainScene", {
             cannonBase: {
               className: "phina.display.Sprite",
               arguments: ["ship"],
-              x: 960 - 50,
-              y: 640 - 120,
-              rotation: -90,
+              x: 480,
+              y: 30,
+              rotation: 180,
               scaleX: 0.7,
               scaleY: 0.7,
               alpha: 0.8,
@@ -64,7 +69,7 @@ phina.define("aqua.client.MainScene", {
 
     // 太陽
     this.threeLayer.light.intensity = 0.2;
-    this.threeLayer.light.position.x = -1;
+    this.threeLayer.light.position.set(-0.5, 1, 0.5).normalize();
 
     // 環境光
     scene.add(new THREE.AmbientLight(0x909090));
@@ -83,19 +88,21 @@ phina.define("aqua.client.MainScene", {
     this._setupWater(scene, camera);
     this._setupSkyBox(scene, camera);
 
-    aqua.client.MyShip()
+    var myShip = aqua.client.MyShip()
       .setCamera(camera)
-      .setCannonHud(this.hud.cannonBase.cannon0, this.hud.cannonBase.cannon1, this.hud.cannonBase.cannon2)
-      .addTo(scene)
-      .addChildTo(this);
+      .setCannonHud(this.hud.cannonBase.cannon0, this.hud.cannonBase.cannon1, this.hud.cannonBase.cannon2);
+    this.addShip(myShip);
 
-    (10).times(function() {
-      var ship = aqua.client.Ship()
-        .addTo(scene)
-        .addChildTo(this);
+    (10).times(function(i) {
+      var ship = aqua.client.Ship();
       ship.x = Math.randint(-3000, 3000);
       ship.z = Math.randint(-3000, 3000);
       ship.rotY = Math.randfloat(0, 360).toRadian();
+
+      this.addShip(ship);
+
+      // if (i == 9) ship.setCamera(camera);
+
     }.bind(this));
 
     // timer
@@ -106,8 +113,80 @@ phina.define("aqua.client.MainScene", {
       });
   },
 
+  addChild: function(child) {
+    phina.app.Element.prototype.addChild.call(this, child);
+    if (child.$t) this.threeLayer.scene.add(child.$t);
+  },
+
+  addShip: function(ship) {
+    var self = this;
+    var scene = this.threeLayer.scene;
+
+    this.ships.push(ship);
+
+    ship
+      .on("removed", function() {
+        self.ships.erase(this);
+      })
+      .on("fire", function(e) {
+        var bullet = e.bullet;
+        self.bullets.push(bullet);
+        bullet
+          .on("removed", function() {
+            self.bullets.erase(this);
+          })
+          .addChildTo(self);
+      })
+      .addChildTo(this);
+
+    return this;
+  },
+
   update: function() {
+    this._hitTestShipVsBullet();
+    this._hitTestShipVsShip();
+  },
+  
+  _hitTestShipVsBullet: function() {
+    var self = this;
+    var scene = this.threeLayer.scene;
+
+    var ss = this.ships.filter(function(it) {
+      return it.hp > 0;
+    });
+    var bs = this.bullets.clone();
+
+    for (var i = 0; i < ss.length; i++) {
+      var ship = ss[i];
+      for (var j = 0; j < bs.length; j++) {
+        var bullet = bs[j];
+        if (bullet.owner !== ship) {
+          if (ship.isHitPoint(bullet.position)) {
+            bullet.remove();
+            aqua.client.Explosion(bullet.x, bullet.y, bullet.z, 0.9)
+              .addChildTo(self);
+            console.log("H I T !!");
+            ship.damage();
+          }
+        }
+      }
+    }
+  },
+  
+  _hitTestShipVsShip: function() {
+    var self = this;
+    var scene = this.threeLayer.scene;
+
+    var ss = this.ships.clone();
     
+    if (ss.length < 2) return;
+    
+    for (var i = 0; i < ss.length - 1; i++) {
+      var a = ss[i];
+      for (var j = i + 1; j < ss.length; j++) {
+        var b = ss[j];
+      }
+    }
   },
 
   _setupWater: function(scene, camera) {
@@ -120,11 +199,11 @@ phina.define("aqua.client.MainScene", {
       textureWidth: 128,
       textureHeight: 128,
       waterNormals: waterNormals,
-      alpha: 1.0,
+      alpha: 0.75,
       sunDirection: this.threeLayer.light.position.clone().normalize(),
       sunColor: 0xffffff,
-      waterColor: 0x001e0f,
-      distortionScale: 50.0,
+      waterColor: 0x007fae, //0x000f1e,
+      distortionScale: 80.0,
     });
     var mirrorMesh = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(2000 * 500, 2000 * 500),

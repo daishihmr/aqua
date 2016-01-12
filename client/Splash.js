@@ -8,7 +8,7 @@ phina.define("aqua.client.Splash", {
     
     scale = scale || 1.0;
 
-    var body = phina.asset.AssetManager.get("vox", "splash").get();
+    var body = phina.asset.AssetManager.get("vox", "splash").clone();
     var tex = body.material.map;
     body.material = new THREE.MeshBasicMaterial({
       color: 0xffffff,

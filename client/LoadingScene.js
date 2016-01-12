@@ -22,6 +22,7 @@ phina.define("aqua.client.LoadingScene", {
           "test": "./assets/chr_fox.vox",
           "ship": "./assets/ship.vox",
           "cannon": "./assets/ship_cannon.vox",
+          "cannonBody": "./assets/ship_cannon_body.vox",
           "bullet": "./assets/bullet.vox",
           "splash": "./assets/splash.vox",
         }

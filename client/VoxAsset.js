@@ -1,8 +1,6 @@
 phina.define("aqua.client.VoxAsset", {
   superClass: "phina.asset.Asset",
   
-  _asset: null,
-
   init: function() {
     this.superInit();
   },
@@ -16,14 +14,10 @@ phina.define("aqua.client.VoxAsset", {
         vertexColor: false,
         optimizeFaces: true,
       });
-      self._asset = builder.createMesh();
-      resolve(self);
+      var mesh = builder.createMesh();
+      resolve(mesh);
     });
   },
-  
-  get: function() {
-    return this._asset.clone();
-  }
 });
 
 phina.asset.AssetLoader.assetLoadFunctions["vox"] = function(key, path) {
